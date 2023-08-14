@@ -1,0 +1,33 @@
+input:focus {
+  outline: none;
+}
+
+.list-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-shadow: 0 8px 8px -10px #4a4a4a;
+}
+
+.search-box {
+  border: 1px solid #9b9b9b;
+  border-radius: 5px;
+  width: 300%;
+  padding: 10px 5px 10px 40px;
+  background: transparent url("../assets/search_black_24dp.svg") no-repeat 13px
+    center;
+  background-color: #9b9b9b;
+}
+
+.home-div {
+  position: relative;
+  right: 1%;
+  display: flex;
+  align-items: center;
+}
+
+.search-div {
+  padding-bottom: 10px;
+  position: relative;
+  left: 1%;
+}
