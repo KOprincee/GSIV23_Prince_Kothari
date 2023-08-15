@@ -1,16 +1,29 @@
 import "./MovieCard.css";
 
-const MovieCard = () => {
+const MovieCard = (props) => {
   return (
     <div className="movie-card">
-      <div className="image-section"></div>
+      {props.image ? (
+        <div
+          className="image-section"
+          style={{
+            backgroundImage: `url("https://image.tmdb.org/t/p/w500/${props.image}")`,
+          }}
+        ></div>
+      ) : (
+        <div className="image-section">No Image Available</div>
+      )}
       <div className="movie-data">
         <div className="row-one">
-          <div className="movie-title">John Wick</div>
-          <div className="movie-rating">4.8</div>
+          <div className="movie-title">{props.title}</div>
+          <div className="movie-rating">{props.rating}</div>
         </div>
         <div className="row-two">
-          <div className="movie-desc">asv</div>
+          {!props.overview ? (
+            <div className="movie-desc">No overview available</div>
+          ) : (
+            <div className="movie-desc">{props.overview}</div>
+          )}
         </div>
       </div>
     </div>
