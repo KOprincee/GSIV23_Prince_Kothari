@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Spinner from "../spinner/spinner";
 import "./MovieDetail.css";
 
 const MovieDetail = () => {
   const [movie, setMovie] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   let { movieId } = useParams();
   useEffect(() => {
     fetch(
@@ -20,36 +22,50 @@ const MovieDetail = () => {
       .then((response) => response.json())
       .then((movieData) => {
         setMovie(movieData);
+        setIsLoading(false);
       });
   }, [movieId]);
 
   console.log(movie);
 
   return (
-    <div className="movie-detail">
-      {movie.poster_path ? (
-        <div
-          className="movie-poster"
-          style={{
-            backgroundImage: `url("https://image.tmdb.org/t/p/w200/${movie.poster_path}")`,
-          }}
-        ></div>
+    <>
+      {isLoading ? (
+        <Spinner />
       ) : (
-        <div className="movie-poster">No Image Available</div>
-      )}
+        <div className="movie-detail">
+          {movie.poster_path ? (
+            <div
+              className="movie-poster"
+              style={{
+                backgroundImage: `url("https://image.tmdb.org/t/p/w500/${movie.poster_path}")`,
+              }}
+            ></div>
+          ) : (
+            <div className="movie-poster">No Image Available</div>
+          )}
 
-      <div className="movie-info">
-        <div className="movie-header">
-          <span className="detail-title">{movie.title} </span>
-          <span className="detail-rating">{movie.vote_average}</span>
+          <div className="movie-info">
+            <div className="movie-header">
+              <span className="detail-title">{movie.title} </span>
+              <span className="detail-rating">{movie.vote_average}</span>
+            </div>
+            <div className="detail-year-len-dir">
+              {movie.release_date.split("-")[0]} | {movie.runtime} Min |
+              Director
+            </div>
+            <div className="detail-cast">
+              <b>Cast:</b>{" "}
+              {movie.credits.cast.map((e) => e.original_name).join(", ")}
+            </div>
+            <div className="detail-description">
+              <b> Description: </b>
+              {movie.overview}
+            </div>
+          </div>
         </div>
-        <div className="detail-year-len-dir">
-          {movie.release_date.split("-")[0]} | {movie.runtime} Min | Director
-        </div>
-        <div className="detail-cast">Cast:</div>
-        <div className="detail-description">Description: {movie.overview}</div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
