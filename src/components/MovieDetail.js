@@ -51,8 +51,13 @@ const MovieDetail = () => {
               <span className="detail-rating">{movie.vote_average}</span>
             </div>
             <div className="detail-year-len-dir">
-              {movie.release_date.split("-")[0]} | {movie.runtime} Min |{" "}
-              {movie.credits.crew.find((e) => e.job === "Director").name}
+              {movie.release_date.split("-")[0]} |{" "}
+              {((movie.runtime - (movie.runtime % 60)) / 60 < 10 ? "0" : "") +
+                ((movie.runtime - (movie.runtime % 60)) / 60).toString() +
+                ":" +
+                (movie.runtime % 60 < 10 ? "0" : "") +
+                (movie.runtime % 60).toString()}{" "}
+              | {movie.credits.crew.find((e) => e.job === "Director").name}
             </div>
             <div className="detail-cast">
               <b>Cast:</b>{" "}
