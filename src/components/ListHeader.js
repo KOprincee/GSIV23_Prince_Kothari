@@ -1,7 +1,7 @@
 import "./ListHeader.css";
 import home from "../assets/home_black_24dp.svg";
 
-const ListHeader = () => {
+const ListHeader = (props) => {
   return (
     <div className="list-header">
       <div className="search-div">
@@ -9,7 +9,7 @@ const ListHeader = () => {
           <input type="search" className="search-box" placeholder="Search" />
         </form>
       </div>
-      <div className="home-div">
+      <div className="home-div" onClick={props.clickEvent}>
         <img src={home} alt="home"></img>
       </div>
     </div>

@@ -23,7 +23,6 @@ const getDates = () => {
       ? futureDate.getDate()
       : "0" + futureDate.getDate());
 
-  //   console.log(todayDateFormatted, futureDateFormatted);
   return { todayDateFormatted, futureDateFormatted };
 };
 

@@ -8,7 +8,6 @@ const List = () => {
   const [movieData, setMovieData] = useState([]);
   const { todayDateFormatted, futureDateFormatted } = getDates();
 
-  console.log(todayDateFormatted, futureDateFormatted);
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&primary_release_date.gte=${todayDateFormatted}&primary_release_date.lte=${futureDateFormatted}&sort_by=primary_release_date.asc`,
@@ -29,10 +28,16 @@ const List = () => {
 
   return (
     <>
-      <ListHeader />
+      <ListHeader
+        clickEvent={() => {
+          window.location.reload(false);
+        }}
+      />
       <div className="movie-cards">
         {movieData.map((e) => (
           <MovieCard
+            key={e.id}
+            id={e.id}
             title={e.original_title}
             overview={e.overview}
             rating={e.vote_average}

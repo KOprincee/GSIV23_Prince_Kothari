@@ -4,9 +4,14 @@ input:focus {
 
 .list-header {
   display: flex;
+  background-color: white;
   flex-direction: row;
   justify-content: space-between;
-  box-shadow: 0 8px 8px -10px #4a4a4a;
+  padding-top: 10px;
+  box-shadow: 0 10px 10px -10px #4a4a4a;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .search-box {
@@ -24,6 +29,7 @@ input:focus {
   right: 1%;
   display: flex;
   align-items: center;
+  padding-bottom: 10px;
 }
 
 .search-div {

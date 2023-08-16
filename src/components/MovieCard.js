@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import "./MovieCard.css";
 
 const MovieCard = (props) => {
+  const navigate = useNavigate();
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => navigate(`/${props.id}`)}>
       {props.image ? (
         <div
           className="image-section"
