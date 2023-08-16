@@ -6,3 +6,9 @@
   justify-content: center;
   padding-top: 10px;
 }
+
+.search-error {
+  display: flex;
+  justify-content: center;
+  margin-top: 20%;
+}

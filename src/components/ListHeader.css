@@ -17,7 +17,6 @@ input:focus {
 .search-box {
   border: 1px solid #9b9b9b;
   border-radius: 5px;
-  width: 300%;
   padding: 10px 5px 10px 40px;
   background: transparent url("../assets/search_black_24dp.svg") no-repeat 13px
     center;

@@ -51,8 +51,8 @@ const MovieDetail = () => {
               <span className="detail-rating">{movie.vote_average}</span>
             </div>
             <div className="detail-year-len-dir">
-              {movie.release_date.split("-")[0]} | {movie.runtime} Min |
-              Director
+              {movie.release_date.split("-")[0]} | {movie.runtime} Min |{" "}
+              {movie.credits.crew.find((e) => e.job === "Director").name}
             </div>
             <div className="detail-cast">
               <b>Cast:</b>{" "}
