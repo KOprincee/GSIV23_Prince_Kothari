@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ListHeader from "../components/ListHeader";
 import MovieCard from "../components/MovieCard";
 import "./List.css";
+import Spinner from "../spinner/spinner";
 
 const List = () => {
   const [movieData, setMovieData] = useState([]);
@@ -48,6 +49,7 @@ const List = () => {
 
   return (
     <>
+      {isLoading && <Spinner />}
       <ListHeader
         childClass="search-div"
         clickEvent={() => {

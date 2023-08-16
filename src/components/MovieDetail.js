@@ -43,7 +43,9 @@ const MovieDetail = () => {
           <span className="detail-title">{movie.title} </span>
           <span className="detail-rating">{movie.vote_average}</span>
         </div>
-        <div className="detail-year-len-dir">Year | Length | Director</div>
+        <div className="detail-year-len-dir">
+          {movie.release_date.split("-")[0]} | {movie.runtime} Min | Director
+        </div>
         <div className="detail-cast">Cast:</div>
         <div className="detail-description">Description: {movie.overview}</div>
       </div>
