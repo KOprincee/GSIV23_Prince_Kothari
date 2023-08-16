@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ListHeader from "../components/ListHeader";
 import MovieCard from "../components/MovieCard";
 import "./List.css";
 
 const List = () => {
   const [movieData, setMovieData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    fetch(`https://api.themoviedb.org/3/movie/upcoming`, {
+  const getMovies = useCallback(async () => {
+    setIsLoading(true);
+    await fetch(`https://api.themoviedb.org/3/movie/upcoming?page=${page}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -17,9 +20,31 @@ const List = () => {
     })
       .then((response) => response.json())
       .then((movieData) => {
-        setMovieData(movieData.results);
+        setMovieData((prevItems) => [...prevItems, ...movieData.results]);
+        setPage((prevPage) => prevPage + 1);
+        setIsLoading(false);
       });
+  }, [page]);
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      isLoading
+    ) {
+      return;
+    }
+    getMovies();
+  }, [isLoading, getMovies]);
+
+  useEffect(() => {
+    getMovies();
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   return (
     <>
