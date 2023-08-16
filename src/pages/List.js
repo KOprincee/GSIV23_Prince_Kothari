@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ListHeader from "../components/ListHeader";
 import MovieCard from "../components/MovieCard";
+import getDates from "../util/getDates";
 import "./List.css";
 
 const List = () => {
   const [movieData, setMovieData] = useState([]);
+  const { todayDateFormatted, futureDateFormatted } = getDates();
+
+  console.log(todayDateFormatted, futureDateFormatted);
   useEffect(() => {
     fetch(
-      `https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&primary_release_date.gte=2023-08-14&primary_release_date.lte=2023-09-14&sort_by=primary_release_date.asc`,
+      `https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&primary_release_date.gte=${todayDateFormatted}&primary_release_date.lte=${futureDateFormatted}&sort_by=primary_release_date.asc`,
       {
         method: "GET",
         headers: {
@@ -21,7 +25,7 @@ const List = () => {
       .then((movieData) => {
         setMovieData(movieData.results);
       });
-  }, []);
+  }, [todayDateFormatted, futureDateFormatted]);
 
   return (
     <>
