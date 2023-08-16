@@ -37,3 +37,10 @@ input:focus {
   position: relative;
   left: 1%;
 }
+
+.detail-div {
+  padding-bottom: 10px;
+  font-weight: bold;
+  position: relative;
+  left: 1%;
+}

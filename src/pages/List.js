@@ -10,7 +10,7 @@ const List = () => {
 
   useEffect(() => {
     fetch(
-      `https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&primary_release_date.gte=${todayDateFormatted}&primary_release_date.lte=${futureDateFormatted}&sort_by=primary_release_date.asc`,
+      `https://api.themoviedb.org/3/discover/movie?page=1&primary_release_date.gte=${todayDateFormatted}&primary_release_date.lte=${futureDateFormatted}&sort_by=primary_release_date.asc`,
       {
         method: "GET",
         headers: {
@@ -29,16 +29,21 @@ const List = () => {
   return (
     <>
       <ListHeader
+        childClass="search-div"
         clickEvent={() => {
           window.location.reload(false);
         }}
-      />
+      >
+        <form>
+          <input type="search" className="search-box" placeholder="Search" />
+        </form>
+      </ListHeader>
       <div className="movie-cards">
         {movieData.map((e) => (
           <MovieCard
             key={e.id}
             id={e.id}
-            title={e.original_title}
+            title={e.title}
             overview={e.overview}
             rating={e.vote_average}
             image={e.poster_path}
