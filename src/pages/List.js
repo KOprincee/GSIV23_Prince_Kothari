@@ -1,92 +1,58 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMovie, searchMovie } from "../store/movie-action";
+import { uiActions } from "../store/ui-slice";
 import ListHeader from "../components/ListHeader";
-import MovieCard from "../components/MovieCard";
-import "./List.css";
 import Spinner from "../spinner/spinner";
+import Movie from "../components/Movie";
+import "./List.css";
+
+localStorage.setItem("loadDone", "true");
 
 const List = () => {
-  const [movieData, setMovieData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [searchpage, setSearchPage] = useState(1);
+  const dispatch = useDispatch();
+  const newPage = useSelector((state) => state.movie.currentPage);
+  const isLoading = useSelector((state) => state.ui.isLoading);
+  const isSearch = useSelector((state) => state.ui.isSearch);
+  const lastPage = useSelector((state) => state.movie.lastPage);
 
-  const getMovies = useCallback(async () => {
-    setIsLoading(true);
-    await fetch(`https://api.themoviedb.org/3/movie/upcoming?page=${page}`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWJjMGM5OTY5YWRkNDg4Zjc3YTNiMGIxODMyNTQ1MiIsInN1YiI6IjY0ZGE0YjBhMzcxMDk3MDBhYzQyNjNmZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EpCzZ3TglQW4v3fcJkv31NF5cjiNdkaRb2np8bgn3Lg",
-      },
-    })
-      .then((response) => response.json())
-      .then((movieData) => {
-        setMovieData((prevItems) => [...prevItems, ...movieData.results]);
-        setPage((prevPage) => prevPage + 1);
-        setIsLoading(false);
-      });
-  }, [page]);
-
+  //handles infinte scrolling
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      isLoading
+      document.documentElement.offsetHeight
     ) {
       return;
     }
-    console.log("check");
-    getMovies();
-  }, [isLoading, getMovies]);
 
+    //scrolling for search results
+    if (isSearch && lastPage !== newPage - 1) {
+      dispatch(
+        searchMovie(
+          document.getElementsByClassName("search-box")[0].value,
+          newPage
+        )
+      );
+    }
+    //scrolling for upcoming movies
+    else if (!isSearch && lastPage !== newPage - 1) {
+      dispatch(uiActions.toggle());
+      dispatch(fetchMovie(newPage));
+    }
+  }, [dispatch, newPage, isSearch, lastPage]);
+
+  //handles the loading of the list page for the first time
   useEffect(() => {
-    getMovies();
+    if (localStorage.getItem("loadDone") === "true") {
+      dispatch(fetchMovie(newPage));
+    }
   }, []);
 
+  //handles the loading of the list page after scrolling
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
-
-  const searchMovie = async (e) => {
-    await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${e.target.value}&page=${searchpage}`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWJjMGM5OTY5YWRkNDg4Zjc3YTNiMGIxODMyNTQ1MiIsInN1YiI6IjY0ZGE0YjBhMzcxMDk3MDBhYzQyNjNmZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EpCzZ3TglQW4v3fcJkv31NF5cjiNdkaRb2np8bgn3Lg",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((movieData) => {
-        setMovieData(movieData.results);
-        console.log(movieData);
-      });
-
-    if (e.target.value.length === 0) {
-      setPage(2);
-      setIsLoading(true);
-      await fetch(`https://api.themoviedb.org/3/movie/upcoming?page=1`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOWJjMGM5OTY5YWRkNDg4Zjc3YTNiMGIxODMyNTQ1MiIsInN1YiI6IjY0ZGE0YjBhMzcxMDk3MDBhYzQyNjNmZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EpCzZ3TglQW4v3fcJkv31NF5cjiNdkaRb2np8bgn3Lg",
-        },
-      })
-        .then((response) => response.json())
-        .then((movieData) => {
-          setMovieData(movieData.results);
-          setIsLoading(false);
-        });
-    }
-  };
-
-  console.log(movieData.length);
 
   return (
     <>
@@ -94,7 +60,7 @@ const List = () => {
       <ListHeader
         childClass="search-div"
         clickEvent={() => {
-          window.location.reload(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
         <form>
@@ -102,26 +68,16 @@ const List = () => {
             type="search"
             className="search-box"
             placeholder="Search"
-            onChange={searchMovie}
+            onChange={(e) => dispatch(searchMovie(e.target.value, 1))}
           />
         </form>
       </ListHeader>
-      {movieData.length === 0 && !isLoading ? (
-        <div className="search-error">
-          <h1>No movie found 💔. Check your spelling 🤦‍♂️ and try again.</h1>
-        </div>
-      ) : (
-        <div className="movie-cards">
-          {movieData.map((e) => (
-            <MovieCard
-              key={e.id}
-              id={e.id}
-              title={e.title}
-              overview={e.overview}
-              rating={e.vote_average}
-              image={e.poster_path}
-            />
-          ))}
+      <div className="movie-cards">
+        <Movie />
+      </div>
+      {lastPage === newPage - 1 && !isLoading && (
+        <div className="page-end">
+          <h1>That's All folks ✌</h1>
         </div>
       )}
     </>
