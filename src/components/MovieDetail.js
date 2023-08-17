@@ -26,8 +26,6 @@ const MovieDetail = () => {
       });
   }, [movieId]);
 
-  console.log(movie);
-
   return (
     <>
       {isLoading ? (
