@@ -60,6 +60,7 @@ const List = () => {
       <ListHeader
         childClass="search-div"
         clickEvent={() => {
+          if (isSearch) window.location.reload();
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
